@@ -42,10 +42,12 @@ body{background:#f4f6fa;display:flex;justify-content:center;min-height:100vh;col
 .dh h3{font-size:1rem;font-weight:800}.ver{font-size:.62rem;font-weight:700;opacity:.75}
 .dc{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:800}
 .db{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.dfoot{padding:12px 18px;background:var(--bg);color:#fff;text-align:center;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0}
+.dfoot .ver{font-size:.62rem;font-weight:700;opacity:.75;margin-left:6px;letter-spacing:0}
 .fl{font-size:.72rem;font-weight:800;color:var(--n);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
-.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.modes{display:flex;gap:6px}
 .cr{display:flex;flex-wrap:wrap;gap:6px}
-.mbtn{padding:.6rem .5rem;border:1.5px solid var(--l);border-radius:12px;background:#fff;cursor:pointer;font-weight:700;font-size:.78rem;color:#475569}
+.mbtn{flex:1;padding:.6rem .35rem;border:1.5px solid var(--l);border-radius:12px;background:#fff;cursor:pointer;font-weight:700;font-size:.72rem;color:#475569;white-space:nowrap;text-align:center}
 .mbtn.on,.cb.on{background:var(--bg);color:#fff;border-color:var(--d)}
 .fi{width:100%;padding:.7rem .9rem;border:1.5px solid var(--l);border-radius:12px;font-size:.85rem;outline:0;background:#f8fafc}
 .fi:focus,.ds input:focus{border-color:var(--b);background:#fff}
@@ -164,7 +166,7 @@ field=k=>`<div data-k="${k}" data-g="${FD[k][1]}"><label class="fl">${FD[k][0]}<
 grp=(p,g,l,o)=>`<div data-g="${g}"><label class="fl">${l}</label><div class="cr">${o.map(([v,t,c,q])=>`<button class="cb ${c||''}" data-p="${q||p}" data-v="${v}">${t}</button>`).join('')}</div></div>`,
 nums=a=>a.map(n=>[n,n||'All']);
 const dr=$('dr'),ov=$('ov'),bd=$('bd');
-dr.innerHTML=`<div class="dh"><h3>⚙️ Filters <span class="ver">${V}</span></h3><button class="dc" id="dc">✕</button></div><div class="db">
+dr.innerHTML=`<div class="dh"><h3>⚙️ Settings</h3><button class="dc" id="dc">✕</button></div><div class="db">
 <div><label class="fl">📖 View</label><div class="modes">${[['mcq','📝 MCQs'],['facts','💡 Facts'],['notes','📔 Notes']].map(([m,t])=>`<button class="mbtn" data-m="${m}">${t}</button>`).join('')}</div></div>
 <div data-g="mcq"><label class="fl">🎯 Mode</label><div class="cr"><button class="cb mm" data-p="mm" data-v="exam">📝 Exam</button><button class="cb mm" data-p="mm" data-v="solved">📖 Solved</button></div></div>
 <div><label class="fl">🔍 Search</label><input class="fi" id="sq" autocomplete="off"></div>
@@ -174,7 +176,8 @@ ${grp('sort','notes','⇅ Sort',[['def','Default'],['prio','Priority'],['unread'
 ${grp('lim','notes','# Notes',nums([10,20,100,1000,0]))}
 ${grp('n','mcq','# MCQs',[...nums([5,10,20,100,200,0]),[-1,'⚠️ Invalids','inv']])}
 ${grp('fn','facts','# Facts',[...nums([10,20,100,200,0]),['t','✔️ Verified','vf','fv'],['f','✘️ Not Verified','nvf','fv']])}
-<div class="drow"><button class="dl" id="lb">🔄 Load</button><button class="drs" id="rb">⟲ Reset</button></div></div>`;
+<div class="drow"><button class="dl" id="lb">🔄 Load</button><button class="drs" id="rb">⟲ Reset</button></div></div>
+<div class="dfoot">⚙️ Filters <span class="ver">${V}</span></div>`;
 const tgl=o=>{ov.classList.toggle('on',o);dr.classList.toggle('on',o)},
 mark=()=>{$$('.cb').forEach(b=>b.classList.toggle('on',String(P[b.dataset.p])==b.dataset.v));$$('.mbtn').forEach(b=>b.classList.toggle('on',b.dataset.m==mode))},
 sync=()=>{$$('[data-g]').forEach(x=>x.hidden=!x.dataset.g.split(' ').includes(mode));$('lb').textContent='🔄 Load '+{mcq:'Quiz',facts:'Facts',notes:'Notes'}[mode];$('sq').placeholder='Search…';mark()};
@@ -219,7 +222,6 @@ async function apply(){
   const q=$('sq').value.trim().toLowerCase();
   if(m=='facts')return rFacts(q);
   if(m=='notes')return rNotes(q);
-  // mcq mode
   const isExam = P.mm=='exam';
   $('tmr').style.display = isExam ? '' : 'none';
   const inv=P.n<0;
