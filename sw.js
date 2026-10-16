@@ -7,9 +7,11 @@ self.addEventListener('install', (event) => {
       return cache.addAll([
         './',
         './index.html',
-        './manifest.json'
+        './manifest.json',
+        './icon-192.png',
+        './icon-512.png'
       ]).catch(() => {
-        // Ignore if some fail
+        // Ignore individual failures
       });
     })
   );
@@ -28,11 +30,14 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for navigation, cache-first for others
+// Fetch handler
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // For navigation requests (HTML), try network first, fallback to cache
+  // Only handle GET requests
+  if (request.method !== 'GET') return;
+
+  // For navigation requests (HTML), network-first with cache fallback
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -52,10 +57,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For other requests, try cache first, then network
+  // For everything else, cache-first with network fallback
   event.respondWith(
     caches.match(request).then((cached) => {
-      return cached || fetch(request).then((response) => {
+      if (cached) return cached;
+      return fetch(request).then((response) => {
         if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -63,7 +69,7 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return response;
-      });
+      }).catch(() => cached);
     })
   );
 });
