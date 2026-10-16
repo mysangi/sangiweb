@@ -1,75 +1,63 @@
-const CACHE_NAME = 'self-learners-v1';
+const CACHE_NAME = 'self-learners-v3';
 
-// Install: cache essential assets
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        './',
-        './index.html',
-        './manifest.json',
-        './icon-192.png',
-        './icon-512.png'
-      ]).catch(() => {
-        // Ignore individual failures
-      });
-    })
-  );
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => Promise.all([
+      cache.add('./index.html').catch(() => null),
+      cache.add('./manifest.json').catch(() => null),
+      cache.add('./icon-192.png').catch(() => null),
+      cache.add('./icon-512.png').catch(() => null),
+      cache.add('./app.js').catch(() => null)
+    ]))
+  );
 });
 
-// Activate: clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch handler
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-
-  // Only handle GET requests
   if (request.method !== 'GET') return;
 
-  // For navigation requests (HTML), network-first with cache fallback
-  if (request.mode === 'navigate') {
+  // Never touch the Apps Script iframe or Google resources
+  if (request.url.includes('script.google.com') ||
+      request.url.includes('googleusercontent.com') ||
+      request.url.includes('fonts.googleapis.com') ||
+      request.url.includes('fonts.gstatic.com')) {
+    return;
+  }
+
+  // Navigation / HTML: network-first, fallback to cache
+  if (request.mode === 'navigate' ||
+      (request.headers.get('accept') || '').includes('text/html')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, clone);
-          });
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return response;
         })
-        .catch(() => {
-          return caches.match(request).then((cached) => {
-            return cached || caches.match('./index.html');
-          });
-        })
+        .catch(() => caches.match(request).then((c) => c || caches.match('./index.html')))
     );
     return;
   }
 
-  // For everything else, cache-first with network fallback
+  // Everything else: cache-first, network fallback
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-      return fetch(request).then((response) => {
+    caches.match(request).then((cached) =>
+      cached || fetch(request).then((response) => {
         if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, clone);
-          });
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
-      }).catch(() => cached);
-    })
+      }).catch(() => cached)
+    )
   );
 });
