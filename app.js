@@ -7,19 +7,13 @@
     loaderHidden = true;
     if (loader) loader.classList.add('hide');
   }
-
   if (frame) {
     frame.addEventListener('load', hideLoader);
-    frame.addEventListener('error', function () {
-      console.warn('Iframe failed to load');
-      hideLoader();
-    });
+    frame.addEventListener('error', function () { hideLoader(); });
   }
   setTimeout(hideLoader, 4000);
-
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
 
-  // Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js')
@@ -28,7 +22,6 @@
     });
   }
 
-  // Install Banner
   var installBanner = document.getElementById('installBanner');
   var installBtn = document.getElementById('installBtn');
   var closeBannerBtn = document.getElementById('closeBannerBtn');
