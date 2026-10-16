@@ -10,81 +10,31 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="description" content="Self Learners — learn anything, anywhere.">
   <title>Self Learners</title>
-
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
   <link rel="manifest" href="manifest.json">
-
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0;
-      height: 100%; width: 100%;
-      overflow: hidden;
-      background: #f5f9fc;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .wrapper { position: fixed; inset: 0; width: 100%; height: 100%; background: #f5f9fc; transition: top .3s ease, height .3s ease; }
-    iframe { display: block; width: 100%; height: 100%; border: 0; background: #f5f9fc; }
-    .loader {
-      position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      background: #f5f9fc; color: #124263;
-      font-size: 0.85rem; font-weight: 600;
-      letter-spacing: 0.03em;
-      z-index: 10; opacity: 1;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-    }
-    .loader.hide { opacity: 0; }
-    .loader span { display: inline-block; animation: pulse 1.2s ease-in-out infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-
-    .install-banner {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: #124263;
-      color: #ffffff;
-      font-size: 0.85rem;
-      font-weight: 500;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      z-index: 100;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-      transform: translateY(-100%);
-      transition: transform 0.3s ease;
-      pointer-events: auto;
-    }
-    .install-banner.show { transform: translateY(0); }
-    .install-banner .message { flex: 1; line-height: 1.3; }
-    .install-banner .message strong { font-weight: 700; }
-    .install-banner .btn {
-      background: #ffffff; color: #124263;
-      border: none; border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 0.8rem; font-weight: 700;
-      cursor: pointer; white-space: nowrap;
-      transition: background 0.2s, opacity 0.2s;
-      font-family: inherit;
-    }
-    .install-banner .btn:hover { background: #e8f0f7; }
-    .install-banner .btn:active { opacity: 0.8; }
-    .install-banner .close-btn {
-      background: transparent; color: #ffffff;
-      border: none; font-size: 1.2rem; line-height: 1;
-      padding: 4px 6px; cursor: pointer;
-      opacity: 0.7; transition: opacity 0.2s;
-      font-family: inherit;
-    }
-    .install-banner .close-btn:hover { opacity: 1; }
-    .wrapper.banner-visible { top: 54px; height: calc(100% - 54px); }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;background:#f5f9fc;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+    .wrapper{position:fixed;inset:0;width:100%;height:100%;background:#f5f9fc;transition:top .3s ease,height .3s ease}
+    iframe{display:block;width:100%;height:100%;border:0;background:#f5f9fc}
+    .loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#f5f9fc;color:#124263;font-size:.85rem;font-weight:600;letter-spacing:.03em;z-index:10;opacity:1;transition:opacity .4s ease;pointer-events:none}
+    .loader.hide{opacity:0}
+    .loader span{display:inline-block;animation:pulse 1.2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+    .install-banner{position:fixed;top:0;left:0;right:0;background:#124263;color:#fff;font-size:.85rem;font-weight:500;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.15);transform:translateY(-100%);transition:transform .3s ease;pointer-events:auto}
+    .install-banner.show{transform:translateY(0)}
+    .install-banner .message{flex:1;line-height:1.3}
+    .install-banner .message strong{font-weight:700}
+    .install-banner .btn{background:#fff;color:#124263;border:none;border-radius:6px;padding:8px 16px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s,opacity .2s;font-family:inherit}
+    .install-banner .btn:hover{background:#e8f0f7}
+    .install-banner .btn:active{opacity:.8}
+    .install-banner .close-btn{background:transparent;color:#fff;border:none;font-size:1.2rem;line-height:1;padding:4px 6px;cursor:pointer;opacity:.7;transition:opacity .2s;font-family:inherit}
+    .install-banner .close-btn:hover{opacity:1}
+    .wrapper.banner-visible{top:54px;height:calc(100% - 54px)}
   </style>
 </head>
 <body>
@@ -96,9 +46,7 @@
     <button class="btn" id="installBtn">Install</button>
     <button class="close-btn" id="closeBannerBtn" aria-label="Close">✕</button>
   </div>
-
   <div class="loader" id="loader"><span>Loading Self Learners…</span></div>
-
   <div class="wrapper" id="wrapper">
     <iframe
       id="appFrame"
@@ -108,7 +56,6 @@
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
   </div>
-
   <script src="app.js"></script>
 </body>
 </html>
