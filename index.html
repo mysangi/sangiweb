@@ -9,6 +9,13 @@
   <meta name="mobile-web-app-capable" content="yes">
   <title>Self Learners</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+  
+  <!-- PWA Manifest (inline) -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"Self Learners","short_name":"Self Learners","start_url":".","display":"standalone","background_color":"%23f5f9fc","theme_color":"%23f5f9fc","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 fill=%27%23f5f9fc%27/%3E%3Ctext x=%2750%27 y=%2768%27 font-size=%2758%27 text-anchor=%27middle%27 dominant-baseline=%27middle%27%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any"}]}'>
+  
+  <!-- Apple touch icon (using SVG data URI) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f5f9fc'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' dominant-baseline='middle'%3E📚%3C/text%3E%3C/svg%3E">
+  
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -34,12 +41,97 @@
     .loader.hide { opacity: 0; }
     .loader span { display: inline-block; animation: pulse 1.2s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* Install alert banner */
+    .install-banner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #124263;
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      pointer-events: auto;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    .install-banner.show {
+      transform: translateY(0);
+    }
+    .install-banner .message {
+      flex: 1;
+      line-height: 1.3;
+    }
+    .install-banner .message strong {
+      font-weight: 700;
+    }
+    .install-banner .btn {
+      background: #ffffff;
+      color: #124263;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, opacity 0.2s;
+      font-family: inherit;
+    }
+    .install-banner .btn:hover {
+      background: #e8f0f7;
+    }
+    .install-banner .btn:active {
+      opacity: 0.8;
+    }
+    .install-banner .close-btn {
+      background: transparent;
+      color: #ffffff;
+      border: none;
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 4px 6px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      font-family: inherit;
+    }
+    .install-banner .close-btn:hover {
+      opacity: 1;
+    }
+
+    /* Adjust wrapper when banner is shown on top */
+    .wrapper.banner-visible {
+      top: 54px;
+      height: calc(100% - 54px);
+      transition: top 0.3s ease, height 0.3s ease;
+    }
+    .wrapper {
+      transition: top 0.3s ease, height 0.3s ease;
+    }
   </style>
 </head>
 <body>
+  <!-- Install banner (hidden by default) -->
+  <div class="install-banner" id="installBanner">
+    <div class="message">
+      <strong>📲 Install Self Learners</strong><br>
+      Add to your home screen for quick access & offline use.
+    </div>
+    <button class="btn" id="installBtn">Install</button>
+    <button class="close-btn" id="closeBannerBtn" aria-label="Close">✕</button>
+  </div>
+
   <div class="loader" id="loader"><span>Loading Self Learners…</span></div>
 
-  <div class="wrapper">
+  <div class="wrapper" id="wrapper">
     <iframe
       id="appFrame"
       src="https://script.google.com/macros/s/AKfycbwSk02eslavaH8ChLh2tSazFYyTK4ny_USnmbgTlLOfquq02yDzFfVS0HDbowVDM7Nq/exec"
@@ -52,12 +144,215 @@
 
   <script>
     (function () {
+      // --- Loader ---
       var loader = document.getElementById('loader');
       var frame  = document.getElementById('appFrame');
       function hideLoader() { if (loader) loader.classList.add('hide'); }
       if (frame) frame.addEventListener('load', hideLoader);
       setTimeout(hideLoader, 6000);
+
+      // Prevent pinch zoom
       document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+
+      // --- PWA Service Worker Registration ---
+      if ('serviceWorker' in navigator) {
+        // Inline service worker via Blob to avoid separate file
+        var swCode = `
+          const CACHE_NAME = 'self-learners-v1';
+          const OFFLINE_URL = '/offline.html';
+
+          // Install: cache essential assets
+          self.addEventListener('install', (event) => {
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => {
+                return cache.addAll([
+                  '/',
+                  // The iframe URL will be cached on first visit, but we can't pre-cache cross-origin.
+                  // We'll handle it dynamically.
+                ]).catch(() => {
+                  // Ignore if some fail
+                });
+              })
+            );
+            self.skipWaiting();
+          });
+
+          // Activate: clean old caches
+          self.addEventListener('activate', (event) => {
+            event.waitUntil(
+              caches.keys().then((keys) => {
+                return Promise.all(
+                  keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+                );
+              })
+            );
+            self.clients.claim();
+          });
+
+          // Fetch: network-first for navigation, cache-first for others
+          self.addEventListener('fetch', (event) => {
+            const { request } = event;
+            const url = new URL(request.url);
+
+            // For navigation requests (HTML), try network first, fallback to cache
+            if (request.mode === 'navigate') {
+              event.respondWith(
+                fetch(request)
+                  .then((response) => {
+                    // Cache the latest version
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                      cache.put(request, clone);
+                    });
+                    return response;
+                  })
+                  .catch(() => {
+                    return caches.match(request).then((cached) => {
+                      return cached || caches.match('/');
+                    });
+                  })
+              );
+              return;
+            }
+
+            // For other requests, try cache first, then network
+            event.respondWith(
+              caches.match(request).then((cached) => {
+                return cached || fetch(request).then((response) => {
+                  // Cache cross-origin resources only if they are successful
+                  if (response && response.status === 200 && response.type === 'basic') {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                      cache.put(request, clone);
+                    });
+                  }
+                  return response;
+                });
+              })
+            );
+          });
+        `;
+        
+        try {
+          var blob = new Blob([swCode], { type: 'application/javascript' });
+          var swUrl = URL.createObjectURL(blob);
+          navigator.serviceWorker.register(swUrl, { scope: '/' })
+            .then(function(reg) {
+              console.log('Service Worker registered:', reg.scope);
+            })
+            .catch(function(err) {
+              console.warn('Service Worker registration failed:', err);
+            });
+        } catch (e) {
+          console.warn('Could not create service worker blob:', e);
+        }
+      }
+
+      // --- Install Banner Logic ---
+      var installBanner = document.getElementById('installBanner');
+      var installBtn = document.getElementById('installBtn');
+      var closeBannerBtn = document.getElementById('closeBannerBtn');
+      var wrapper = document.getElementById('wrapper');
+      var deferredPrompt = null;
+
+      // Check if app is already installed (standalone mode)
+      function isAppInstalled() {
+        // Check for standalone display mode
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+          return true;
+        }
+        // iOS Safari
+        if (window.navigator.standalone === true) {
+          return true;
+        }
+        // Also check if launched from home screen on Android
+        if (document.referrer.includes('android-app://')) {
+          return true;
+        }
+        return false;
+      }
+
+      // Show the banner if not installed and not dismissed
+      function maybeShowBanner() {
+        if (isAppInstalled()) {
+          return; // Already installed, don't show
+        }
+        // Check if user dismissed the banner in this session
+        if (sessionStorage.getItem('installBannerDismissed') === 'true') {
+          return;
+        }
+        // Show after a short delay
+        setTimeout(function() {
+          installBanner.classList.add('show');
+          wrapper.classList.add('banner-visible');
+        }, 1500);
+      }
+
+      // Hide banner
+      function hideBanner() {
+        installBanner.classList.remove('show');
+        wrapper.classList.remove('banner-visible');
+      }
+
+      // Close button
+      closeBannerBtn.addEventListener('click', function() {
+        hideBanner();
+        sessionStorage.setItem('installBannerDismissed', 'true');
+      });
+
+      // Install button
+      installBtn.addEventListener('click', function() {
+        if (deferredPrompt) {
+          // Show the native install prompt
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(function(choiceResult) {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+              hideBanner();
+            } else {
+              console.log('User dismissed the install prompt');
+            }
+            deferredPrompt = null;
+          });
+        } else {
+          // Fallback: show instructions for manual install
+          var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+          if (isIOS) {
+            alert('To install: tap the Share button, then "Add to Home Screen".');
+          } else {
+            alert('To install: open your browser menu and select "Install app" or "Add to Home Screen".');
+          }
+        }
+      });
+
+      // Capture the beforeinstallprompt event
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show banner now that we know install is possible
+        maybeShowBanner();
+      });
+
+      // Also try to show banner on page load if not installed
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          maybeShowBanner();
+        }, 2000);
+      });
+
+      // Listen for app installed event
+      window.addEventListener('appinstalled', function() {
+        hideBanner();
+        console.log('App was installed');
+      });
+
+      // Optional: hide banner if app becomes installed while page is open
+      window.matchMedia('(display-mode: standalone)').addEventListener('change', function(e) {
+        if (e.matches) {
+          hideBanner();
+        }
+      });
+
     })();
   </script>
 </body>
