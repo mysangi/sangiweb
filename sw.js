@@ -1,58 +1,63 @@
-const CACHE='self-learners-v5';
-const SHELL=['./','./index.html','./manifest.json','./app.js','./icon-192.png','./icon-512.png'];
-const APPSHELL='https://script.google.com/macros/s/AKfycbwSk02eslavaH8ChLh2tSazFYyTK4ny_USnmbgTlLOfquq02yDzFfVS0HDbowVDM7Nq/exec';
+const CACHE_NAME = 'self-learners-v3';
 
-self.addEventListener('install',(e)=>{
+self.addEventListener('install', (event) => {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL.map(u=>new Request(u,{cache:'reload'}))).catch(()=>null)));
-});
-
-self.addEventListener('activate',(e)=>{
-  e.waitUntil(
-    caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => Promise.all([
+      cache.add('./index.html').catch(() => null),
+      cache.add('./manifest.json').catch(() => null),
+      cache.add('./icon-192.png').catch(() => null),
+      cache.add('./icon-512.png').catch(() => null),
+      cache.add('./app.js').catch(() => null)
+    ]))
   );
 });
 
-self.addEventListener('fetch',(e)=>{
-  const {request}=e;
-  if(request.method!=='GET')return;
-  const u=request.url;
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
 
-  // Skip Google Fonts
-  if(u.includes('fonts.googleapis.com')||u.includes('fonts.gstatic.com'))return;
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
 
-  // Apps Script HTML page: network-first, fallback to cache
-  if(u.startsWith(APPSHELL.split('/exec')[0])){
-    e.respondWith(
-      fetch(request).then(r=>{
-        const clone=r.clone();
-        caches.open(CACHE).then(c=>c.put(request,clone)).catch(()=>{});
-        return r;
-      }).catch(()=>caches.match(request))
+  // Never touch the Apps Script iframe or Google resources
+  if (request.url.includes('script.google.com') ||
+      request.url.includes('googleusercontent.com') ||
+      request.url.includes('fonts.googleapis.com') ||
+      request.url.includes('fonts.gstatic.com')) {
+    return;
+  }
+
+  // Navigation / HTML: network-first, fallback to cache
+  if (request.mode === 'navigate' ||
+      (request.headers.get('accept') || '').includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+          return response;
+        })
+        .catch(() => caches.match(request).then((c) => c || caches.match('./index.html')))
     );
     return;
   }
 
-  // HTML navigation: network-first
-  if(request.mode==='navigate'||(request.headers.get('accept')||'').includes('text/html')){
-    e.respondWith(
-      fetch(request).then(r=>{
-        const clone=r.clone();
-        caches.open(CACHE).then(c=>c.put(request,clone)).catch(()=>{});
-        return r;
-      }).catch(()=>caches.match(request).then(c=>c||caches.match('./index.html')))
-    );
-    return;
-  }
-
-  // Static: cache-first
-  e.respondWith(
-    caches.match(request).then(cached=>cached||fetch(request).then(r=>{
-      if(r&&r.status===200&&r.type==='basic'){
-        const clone=r.clone();
-        caches.open(CACHE).then(c=>c.put(request,clone)).catch(()=>{});
-      }
-      return r;
-    }).catch(()=>cached))
+  // Everything else: cache-first, network fallback
+  event.respondWith(
+    caches.match(request).then((cached) =>
+      cached || fetch(request).then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
+        return response;
+      }).catch(() => cached)
+    )
   );
 });
