@@ -1,334 +1,64 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0ea5e9"><title>Self Learners</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-:root{--b:#0ea5e9;--d:#0284c7;--n:#0a1e3f;--l:#e2e8f0;--g:#059669;--r:#dc2626;--y:#f5b800;--bg:linear-gradient(135deg,#0ea5e9,#0284c7)}
-body{background:#f4f6fa;display:flex;justify-content:center;min-height:100vh;color:#0f1419}
-.w{width:100%;max-width:980px;padding:16px}
-.top,.card{background:#fff;border:1px solid var(--l)}
-.top{position:sticky;top:0;z-index:10;border-radius:16px;padding:10px 14px;margin-bottom:12px;box-shadow:0 8px 20px -6px rgba(10,30,63,.12);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.card{border-radius:20px;padding:18px 20px;box-shadow:0 20px 40px -12px rgba(10,30,63,.18)}
-.tt{font-weight:800;color:var(--n);font-size:.95rem;flex:1;min-width:120px}
-.rt{display:flex;gap:6px;align-items:center}
-.pill,.tmr{font-weight:800;font-size:.62rem;padding:.28rem .6rem;border-radius:9999px}
-.pill{background:#e0f2fe;color:var(--d);border:1px solid #7dd3fc}.tmr{background:var(--bg);color:#fff}
-.dots{background:0;border:0;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#475569;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-.dots:hover{background:#f1f5f9}.dots span{width:4px;height:4px;border-radius:50%;background:currentColor}
-.q{font-weight:700;font-size:1.1rem;color:var(--n);line-height:1.55;margin-bottom:16px;cursor:pointer;padding-right:22px;position:relative}
-.q:hover{color:var(--d);text-decoration:underline;text-underline-offset:3px}
-.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--l);border-radius:9999px;padding:14px 18px;font-size:.95rem;font-weight:600;cursor:pointer;margin-bottom:10px;color:#0f1419}
-.opt:hover:not(:disabled){background:#e0f2fe;border-color:var(--b)}.opt:disabled{cursor:default}
-.k,.lt{background:#e0f2fe;color:var(--d);font-weight:800;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.opt.ok{background:#d1fae5;border-color:var(--g)}.opt.ok .k{background:var(--g);color:#fff}
-.opt.bad{background:#fee2e2;border-color:var(--r)}.opt.bad .k{background:var(--r);color:#fff}
-.chips{margin-top:14px;padding-top:14px;border-top:1px dashed var(--l)}
-.inv-msg{margin-top:10px;padding:10px 14px;background:#fee2e2;border:1.5px solid var(--r);border-left:5px solid var(--r);border-radius:12px;color:var(--r);font-weight:800;font-size:.85rem}
-.bar{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
-.btn{background:var(--bg);color:#fff;border:0;font-weight:700;font-size:.9rem;padding:.7rem 1.4rem;border-radius:9999px;cursor:pointer;box-shadow:0 4px 12px rgba(2,132,199,.25)}
-.btn:active{transform:scale(.96)}.btn:disabled{opacity:.4;cursor:not-allowed}.btn-o{background:#fff;color:var(--d);border:1.5px solid #bae6fd}
-.btn-g,.dl{background:linear-gradient(135deg,#10b981,#059669)}
-.load{padding:60px;text-align:center;color:#475569;font-weight:600}
-.grid,.stats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:16px}
-.dot{width:28px;height:28px;border-radius:50%;background:#f4f6fa;border:2px solid transparent;font-size:.68rem;font-weight:700;color:#94a3b8;cursor:pointer}
-.dot.ok{background:var(--g);color:#fff}.dot.bad{background:var(--r);color:#fff}.dot.inv{background:var(--y);color:var(--n)}
-.dot.cur{border-color:var(--d);transform:scale(1.15);box-shadow:0 0 0 3px rgba(2,132,199,.2)}
-.stat{font-size:.68rem;font-weight:800;padding:.32rem .7rem;border-radius:9999px;border:1.5px solid #cbd5e1;background:#f8fafc;color:#475569}
-.stat.ok{background:#d1fae5;border-color:#10b981;color:var(--g)}.stat.bad{background:#fee2e2;border-color:#fca5a5;color:var(--r)}.stat.inv{background:#fef3c7;border-color:#fcd34d;color:#92400e}
-.ov{position:fixed;inset:0;background:rgba(10,30,63,.55);backdrop-filter:blur(6px);z-index:900;opacity:0;pointer-events:none;transition:.25s}
-.ov.on{opacity:1;pointer-events:auto}
-.dr{position:fixed;top:0;right:0;bottom:0;width:min(92vw,400px);background:#fff;z-index:901;transform:translateX(105%);transition:transform .35s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;box-shadow:-20px 0 60px -12px rgba(10,30,63,.35)}
-.dr.on{transform:none}
-.db{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
-.dfoot{padding:10px 14px 10px 18px;background:var(--bg);color:#fff;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.dfoot .lbl{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-.dfoot .ver{font-size:.62rem;font-weight:700;opacity:.75;margin-left:6px;letter-spacing:0}
-.dc{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-weight:800;font-size:.9rem}
-.dc:hover{background:rgba(255,255,255,.35)}
-.fl{font-size:.72rem;font-weight:800;color:var(--n);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
-.modes{display:flex;gap:6px}
-.cr{display:flex;flex-wrap:wrap;gap:6px}
-.mbtn{flex:1;padding:.6rem .35rem;border:1.5px solid var(--l);border-radius:12px;background:#fff;cursor:pointer;font-weight:700;font-size:.72rem;color:#475569;white-space:nowrap;text-align:center}
-.mbtn.on,.cb.on{background:var(--bg);color:#fff;border-color:var(--d)}
-.fi{width:100%;padding:.7rem .9rem;border:1.5px solid var(--l);border-radius:12px;font-size:.85rem;outline:0;background:#f8fafc}
-.fi:focus,.ds input:focus{border-color:var(--b);background:#fff}
-.cc{display:inline-flex;align-items:center;gap:4px;background:var(--b);color:#fff;font-size:.68rem;font-weight:700;padding:.25rem .55rem;border-radius:9999px}
-.cc button{background:0;border:0;color:#fff;font-size:.85rem;cursor:pointer;font-weight:800}
-.dd{position:relative}
-.ddb{border:1.5px solid var(--l);border-radius:12px;padding:.55rem .7rem;min-height:42px;cursor:pointer;display:flex;align-items:center;font-size:.82rem;font-weight:600;color:#475569}
-.ddb:hover{border-color:var(--b)}.ar{margin-left:auto;font-size:.6rem;color:#94a3b8}.dd.on .ar{transform:rotate(180deg)}
-.ddm{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--l);border-radius:12px;box-shadow:0 16px 40px -10px rgba(10,30,63,.25);max-height:280px;overflow:hidden;padding:.35rem;z-index:10;display:none;flex-direction:column}
-.dd.on .ddm{display:flex}
-.ds{padding:.4rem .5rem .35rem;border-bottom:1px solid var(--l);margin-bottom:.3rem}
-.ds input{width:100%;border:1.5px solid var(--l);border-radius:8px;padding:.45rem .65rem;font-size:.78rem;outline:0;background:#f8fafc}
-.ddl{overflow-y:auto;max-height:200px;display:flex;flex-direction:column;gap:1px}
-.ddi{padding:.5rem .7rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:.5rem}
-.ddi:hover{background:#e0f2fe;color:var(--d)}.ddi.sel{background:var(--b);color:#fff}
-.ck{width:16px;height:16px;border:1.5px solid #cbd5e1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
-.ddi.sel .ck{background:#fff;color:var(--d);border-color:#fff}
-.dde{padding:.8rem;text-align:center;font-size:.78rem;color:#94a3b8;font-style:italic}
-.cb{padding:.5rem .85rem;border:1.5px solid var(--l);border-radius:9999px;background:#fff;cursor:pointer;font-weight:700;font-size:.78rem;color:#475569}
-.cb:hover{border-color:var(--b);color:var(--d)}
-.cb.inv.on{background:linear-gradient(135deg,#f5b800,#d99e00);border-color:#d99e00;color:var(--n)}
-.cb.vf.on{background:#059669;border-color:#047857}.cb.nvf.on{background:#dc2626;border-color:#991b1b}
-.drow{display:flex;gap:8px;margin-top:4px}
-.dl{flex:1;padding:.85rem;border:0;border-radius:9999px;font-weight:800;font-size:.9rem;color:#fff;cursor:pointer}
-.drs{padding:.85rem 1rem;border:1.5px solid var(--l);border-radius:9999px;font-weight:800;font-size:.9rem;color:#475569;background:#fff;cursor:pointer}
-.drs:hover{border-color:var(--r);color:var(--r);background:#fee2e2}
-.list{display:flex;flex-direction:column;gap:.75rem;margin-top:14px}
-.li{background:#f8fafc;border:1.5px solid var(--l);border-left:4px solid var(--b);border-radius:14px;padding:.85rem 1rem;position:relative;cursor:pointer}
-.li:hover{background:#e0f2fe;border-left-color:var(--y)}.li.fact{border-left-color:var(--y)}
-.lq{font-weight:700;color:var(--n);font-size:.9rem;line-height:1.5;padding-right:1.4rem}
-.sn{background:var(--b);color:#fff;font-weight:800;font-size:.68rem;padding:2px 8px;border-radius:9999px;margin-right:.5rem;display:inline-block}
-.lo{margin-top:.5rem;display:flex;flex-direction:column;gap:.3rem}
-.lop{display:flex;gap:.4rem;font-size:.82rem;line-height:1.5;padding:.4rem .6rem;background:#fff;border:1px solid var(--l);border-radius:8px;color:#475569}
-.lop .lt{width:22px;height:22px;font-size:.68rem}
-.lop.ok{background:#d1fae5;border-color:var(--g);color:#065f46;font-weight:700}.lop.ok .lt{background:var(--g);color:#fff}
-.lm{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem;font-size:.64rem;font-weight:700}
-.mc{padding:.2rem .55rem;border-radius:9999px;background:#fff;border:1px solid var(--l);color:#475569}
-.ms{background:#e0f2fe;color:var(--d)}.mt{background:#fff7dd;color:#92400e}.mj{background:var(--n);color:var(--y)}
-.ans{margin-top:.5rem;padding-top:.5rem;border-top:1px dashed var(--l);font-size:.83rem;color:#047857;font-weight:600}
-.vfy,.qvfy{position:absolute;width:12px;height:12px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#fff}
-.vfy{top:6px;right:6px;box-shadow:0 0 0 1.5px #fff}.qvfy{top:2px;right:0}
-.ncard{background:#f8fafc;border:1.5px solid var(--l);border-radius:14px;padding:12px 14px 10px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:7px;cursor:pointer}
-.ncard:hover,.ncard.open{border-color:var(--b)}
-.ncard::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#94a3b8}
-.ncard.vimp::before{background:var(--r)}.ncard.imp::before{background:var(--y)}.ncard.note::before{background:var(--b)}
-.ncard.rd{background:#d1fae5;border-color:var(--g)}.ncard.rd::before{background:var(--g)}
-.ctop,.nbot,.nbot>div,.refrow{display:flex;align-items:center;gap:6px}.ctop,.nbot{justify-content:space-between}.refrow{flex-wrap:wrap}
-.cnum{padding:0 6px;height:18px;line-height:16px;border-radius:6px;background:#e2e8f0;color:#64748b;font-size:.6rem;font-weight:800;font-family:monospace}
-.nref{padding:3px 9px;border-radius:6px;background:#e0f2fe;border:1px solid #7dd3fc;color:var(--d);font-size:.68rem;font-weight:800}
-.ncat{font-size:.58rem;letter-spacing:.06em;font-weight:800;background:#fff;border:1px solid var(--l);color:#64748b;padding:3px 8px;border-radius:6px;text-transform:uppercase}
-.nbadge{padding:3px 8px;border-radius:99px;font-size:.58rem;font-weight:800;border:1px solid;text-transform:uppercase;color:#64748b;background:#e2e8f0;border-color:#cbd5e1}
-.nbadge.vimp{color:var(--r);background:#fee2e2;border-color:#fca5a5}.nbadge.imp{color:#92400e;background:#fef3c7;border-color:#fcd34d}.nbadge.note{color:var(--d);background:#e0f2fe;border-color:#7dd3fc}
-.nmem{font-size:.9rem;font-weight:600;color:var(--n);line-height:1.55;padding:7px 9px;margin:-2px -3px;border-radius:8px;word-break:break-word}
-.nmem:hover{background:#e0f2fe}
-.nbot{padding-top:8px;border-top:1px dashed var(--l);min-height:32px}
-.nric,.nxh{width:32px;height:32px;border-radius:8px;border:1px solid var(--l);background:#fff;color:#64748b;cursor:pointer;display:grid;place-items:center;font-size:14px}
-.nric:hover{border-color:var(--b)}.nric.like.on{background:#d1fae5;border-color:var(--g)}.nric.dislike.on{background:#fee2e2;border-color:var(--r)}
-.nst{font-size:.64rem;font-weight:700;color:#94a3b8}.nst.read{color:var(--g)}
-.nrc{padding:2px 8px;border-radius:99px;background:#e2e8f0;font-size:.62rem;color:#64748b;font-weight:800}.nrc.h{background:#d1fae5;color:var(--g);border:1px solid #10b981}
-.nxh{background:0;border:0;color:#94a3b8}.nxh:hover{color:var(--b);background:#e0f2fe}.ncard.open .nxh{color:var(--b);transform:rotate(180deg)}
-.ndet{display:none;padding-top:10px;border-top:1px solid var(--l);margin-top:8px;cursor:default}.ncard.open .ndet{display:block}
-.ndr{display:grid;grid-template-columns:100px 1fr;gap:12px;padding:6px 0;font-size:.8rem;color:#475569}
-.ndr small{font-size:.6rem;font-weight:800;text-transform:uppercase;color:#94a3b8}.ndr strong{color:var(--n)}
-.ninfo{display:flex;justify-content:space-between;gap:8px;padding:8px 4px 12px;color:#475569;font-size:.7rem;font-weight:600;flex-wrap:wrap}
-.ninfo b{color:var(--n)}.pct{padding:2px 8px;margin-left:6px;border-radius:99px;background:#e0f2fe;color:var(--d);font-weight:800;font-size:.66rem}
-.nmore{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 0 8px;font-size:.72rem;color:#64748b;text-align:center;font-weight:600}
-.nmore button{padding:11px 22px;background:var(--bg);border:0;color:#fff;border-radius:10px;font-size:.84rem;font-weight:700;cursor:pointer}
-[hidden]{display:none!important}
-</style></head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f9fc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Self Learners</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%; width: 100%;
+      overflow: hidden;
+      background: #f5f9fc;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .wrapper { position: fixed; inset: 0; width: 100%; height: 100%; background: #f5f9fc; }
+    iframe { display: block; width: 100%; height: 100%; border: 0; background: #f5f9fc; }
+    .loader {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: #f5f9fc; color: #124263;
+      font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.03em;
+      z-index: 10; opacity: 1;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .loader.hide { opacity: 0; }
+    .loader span { display: inline-block; animation: pulse 1.2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+  </style>
+</head>
 <body>
-<div class="w"><div class="top"><div class="tt" id="tt">Loading…</div><div class="rt"><span class="pill" id="cnt">0/0</span><span class="tmr" id="tmr">00:00</span><button class="dots" id="dotsBtn"><span></span><span></span><span></span></button></div></div>
-<div class="card"><div id="bd"><div class="load">🔄 Loading…</div></div><div class="grid" id="gd"></div><div class="stats" id="st"></div></div></div>
-<div class="ov" id="ov"></div><aside class="dr" id="dr"></aside>
-<script>
-const V='v4.5',PG=200,
-U={q:'https://docs.google.com/spreadsheets/d/e/2PACX-1vQyB_I39SsLmQC5C8O1KkzZEUgFPAIJQ95k0vFj9M-HX8vI9hsdLh0GFYYO8O1QFnvP4vWkAh3nmbd3/pub?output=csv',
-f:'https://docs.google.com/spreadsheets/d/e/2PACX-1vTRO-FPemOqN9exgEgDyt_x1KfNgTAxf0mOeg16c7THfRaaHg0mbgwuTrObcbIwJKSx2dWtrQCNcrCV/pub?output=csv',
-n:'https://docs.google.com/spreadsheets/d/e/2PACX-1vTR3op0RZuTMJ-HegiLJYV18VR97DAnZpcUPRWwMYRfr5pVVf_x6ZOYMfiS8aXIJQcTh2hHpsgqJ8ks/pub?output=csv'},
-P0={n:20,fn:20,fv:'all',tab:'all',sort:'def',lim:20,mm:'exam'};
+  <div class="loader" id="loader"><span>Loading Self Learners…</span></div>
 
-// ---- helpers ----
-const $=i=>document.getElementById(i),$$=s=>document.querySelectorAll(s),
-cl=s=>String(s??'').replace(/[\u200B-\u200D\uFEFF\u00A0]/g,' ').replace(/\s+/g,' ').trim(),
-nk=s=>cl(s).toLowerCase(),TC=s=>cl(s).replace(/(^|\s)\S/g,m=>m.toUpperCase()),
-esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
-shuf=a=>{a=[...a];for(let i=a.length;i>1;){let j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a},
-isSp=o=>/all\s+of\s+(the\s+)?above|none\s+of\s+(the\s+)?above|above\s+all|\bboth\b|^\s*none\s*$|all\s+of\s+these/i.test(cl(o)),
-shufOpts=(o,ci)=>{const free=shuf([...o.keys()].filter(i=>!isSp(o[i]))),ord=o.map((x,i)=>isSp(x)?i:free.pop());return{opts:ord.map(i=>o[i]),correct:ci<0?-1:ord.indexOf(ci)}},
-shufCat=l=>{const b={};l.forEach(x=>(b[[x.job,x.subject,x.topic].map(nk).join('|')]??=[]).push(x));return shuf(Object.values(b)).flatMap(shuf)},
-findC=(raw,o)=>{const r=cl(raw);if(!r)return-1;const i=o.findIndex(x=>cl(x)===r);return i>=0?i:/^[A-Da-d]$/.test(r)?'abcd'.indexOf(r.toLowerCase()):/^[1-4]$/.test(r)?+r-1:-1},
-pCSV=l=>{const r=[];let c='',q=0;for(let i=0;i<l.length;i++){const h=l[i];if(q){if(h=='"'){l[i+1]=='"'?(c+='"',i++):q=0}else c+=h}else if(h=='"')q=1;else if(h==','){r.push(cl(c));c=''}else c+=h}r.push(cl(c));return r},
-csv=async u=>(await(await fetch(u+'&_t='+Date.now(),{cache:'no-store'})).text()).split('\n').filter(l=>l.trim()).map(pCSV),
-vfy=(v,c='vfy')=>`<span class="${c}" style="background:${{t:'var(--b)',f:'var(--r)'}[v]||'#94a3b8'}">${{t:'✔',f:'✘'}[v]||'?'}</span>`,
-meta=(o,x)=>o.map(([k,e,c])=>x[k]?`<span class="mc ${c}">${e} ${esc(TC(x[k]))}</span>`:'').join(''),
-gs=a=>open('https://www.google.com/search?q='+encodeURIComponent(a.filter(Boolean).join(' ')),'_blank'),
-qSearch=x=>gs([x.q,x.opts.map((o,i)=>`${'ABCD'[i]}) ${o}`).join(' '),...[['topic','Topic'],['subject','Subject'],['job','Job']].map(([k,l])=>x[k]&&`${l}: ${x[k]}`)]),
-MQ=[['subject','📚','ms'],['topic','🏷️','mt'],['job','💼','mj']],MF=MQ.slice(0,2),
-MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-p2=n=>String(n).padStart(2,'0'),D=t=>new Date(t+(300+new Date().getTimezoneOffset())*6e4),
-dk=t=>{const d=D(t);return`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`},today=()=>dk(Date.now()),
-hm=d=>`${p2(d.getHours()%12||12)}:${p2(d.getMinutes())}`,ap=d=>d.getHours()>=12?'PM':'AM',
-fT=t=>{if(!t)return'';const d=D(t);return`${DY[d.getDay()]}, ${MN[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}, ${hm(d)}:${p2(d.getSeconds())} ${ap(d)}`},
-fS=t=>{if(!t)return'';const d=D(t);return`${d.getDate()} ${MN[d.getMonth()]}, ${hm(d)} ${ap(d)}`},
-sm=raw=>{const l=nk(raw).replace(/ /g,'');return['v.imp','vimp','veryimportant','v.important'].includes(l)?{c:'vimp',l:'Very Imp',r:0}:['imp','important'].includes(l)?{c:'imp',l:'Important',r:1}:['note','notes'].includes(l)?{c:'note',l:'Note',r:2}:{c:'other',l:cl(raw)||'—',r:3}};
+  <div class="wrapper">
+    <iframe
+      id="appFrame"
+      src="https://script.google.com/macros/s/AKfycbwSk02eslavaH8ChLh2tSazFYyTK4ny_USnmbgTlLOfquq02yDzFfVS0HDbowVDM7Nq/exec"
+      allow="clipboard-write"
+      loading="eager"
+      referrerpolicy="no-referrer-when-downgrade"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads">
+    </iframe>
+  </div>
 
-// ---- state ----
-let all=[],qs=[],ans=[],cur=0,time=0,tmr,mode='mcq',facts=[],notes=[],fl=[],nv=[],nRead={},nR={},nBy={},ld={};
-const P={...P0},S={job:new Set,subject:new Set,fs:new Set,ft:new Set,cat:new Set,st:new Set},Q={};
-
-// ---- drawer ----
-const FD={job:['💼 Jobs','mcq','All jobs'],subject:['📚 Subjects','mcq','All subjects'],fs:['📚 Subjects','facts','All subjects'],ft:['🏷️ Topics','facts','All topics'],cat:['📚 Category','notes','All Categories'],st:['🏷️ Status','notes','All Status']},
-field=k=>`<div data-k="${k}" data-g="${FD[k][1]}"><label class="fl">${FD[k][0]}</label><div class="cr" id="${k}c"></div><div class="dd"><div class="ddb"><span id="${k}t"></span><span class="ar">▼</span></div><div class="ddm"><div class="ds"><input id="${k}s" placeholder="Search…" autocomplete="off"></div><div class="ddl" id="${k}m"></div></div></div></div>`,
-grp=(p,g,l,o)=>`<div data-g="${g}"><label class="fl">${l}</label><div class="cr">${o.map(([v,t,c,q])=>`<button class="cb ${c||''}" data-p="${q||p}" data-v="${v}">${t}</button>`).join('')}</div></div>`,
-nums=a=>a.map(n=>[n,n||'All']);
-const dr=$('dr'),ov=$('ov'),bd=$('bd');
-dr.innerHTML=`<div class="db">
-<div><label class="fl">📖 View</label><div class="modes">${[['mcq','📝 MCQs'],['facts','💡 Facts'],['notes','📔 Notes']].map(([m,t])=>`<button class="mbtn" data-m="${m}">${t}</button>`).join('')}</div></div>
-<div data-g="mcq"><label class="fl">🎯 Mode</label><div class="cr"><button class="cb mm" data-p="mm" data-v="exam">📝 Exam</button><button class="cb mm" data-p="mm" data-v="solved">📖 Solved</button></div></div>
-<div><label class="fl">🔍 Search</label><input class="fi" id="sq" autocomplete="off"></div>
-${Object.keys(FD).map(field).join('')}
-${grp('tab','notes','📌 Tab',[['all','All'],['read','Read'],['unread','Unread'],['liked','Liked'],['disliked','Disliked']])}
-${grp('sort','notes','⇅ Sort',[['def','Default'],['prio','Priority'],['unread','Unread first'],['most','Most read']])}
-${grp('lim','notes','# Notes',nums([10,20,100,1000,0]))}
-${grp('n','mcq','# MCQs',[...nums([5,10,20,100,200,0]),[-1,'⚠️ Invalids','inv']])}
-${grp('fn','facts','# Facts',[...nums([10,20,100,200,0]),['t','✔️ Verified','vf','fv'],['f','✘️ Not Verified','nvf','fv']])}
-<div class="drow"><button class="dl" id="lb">🔄 Load</button><button class="drs" id="rb">⟲ Reset</button></div></div>
-<div class="dfoot"><span><span class="lbl">⚙️ Filters</span><span class="ver">${V}</span></span><button class="dc" id="dc">✕</button></div>`;
-const tgl=o=>{ov.classList.toggle('on',o);dr.classList.toggle('on',o)},
-mark=()=>{$$('.cb').forEach(b=>b.classList.toggle('on',String(P[b.dataset.p])==b.dataset.v));$$('.mbtn').forEach(b=>b.classList.toggle('on',b.dataset.m==mode))},
-sync=()=>{$$('[data-g]').forEach(x=>x.hidden=!x.dataset.g.split(' ').includes(mode));$('lb').textContent='🔄 Load '+{mcq:'Quiz',facts:'Facts',notes:'Notes'}[mode];mark()};
-
-// ---- filter menus ----
-const mapOf=(a,f)=>{const m=new Map;a.forEach(x=>{const r=cl(x[f]);r&&!m.has(nk(r))&&m.set(nk(r),TC(r))});return m},
-cm=(f,d)=>{const m=new Map;notes.forEach(r=>{const c=cl(r[f])||d;m.set(c,(m.get(c)||0)+1)});return m},
-lab=m=>new Map([...m].map(([v,c])=>[v,`${v} (${c})`])),
-M={job:()=>mapOf(all,'job'),subject:()=>mapOf(S.job.size?all.filter(x=>S.job.has(nk(x.job))):all,'subject'),fs:()=>mapOf(facts,'subject'),ft:()=>mapOf(facts,'topic'),cat:()=>lab(cm('category','Uncategorized')),st:()=>lab(new Map([...cm('status','—')].sort((a,b)=>sm(a[0]).r-sm(b[0]).r||a[0].localeCompare(b[0]))))};
-function menu(k){
-  const m=M[k](),s=S[k],q=nk(Q[k]||''),L=FD[k][2];[...s].forEach(v=>m.has(v)||s.delete(v));
-  const items=[...m].sort((a,b)=>k=='st'?0:a[1].localeCompare(b[1])).filter(([,v])=>!q||nk(v).includes(q)),
-  row=(v,t)=>{const on=v?s.has(v):!s.size;return`<div class="ddi${on?' sel':''}" data-v="${esc(v)}"><span class="ck">${on?'✓':''}</span>${esc(t)}</div>`};
-  $(k+'m').innerHTML=items.length?row('',L)+items.map(e=>row(...e)).join(''):`<div class="dde">${q?'No matches':'No options'}</div>`;
-  $(k+'t').textContent=s.size?`${s.size} selected`:L;
-  $(k+'c').innerHTML=[...s].map(v=>`<span class="cc">${esc(m.get(v)||v)} <button data-v="${esc(v)}">×</button></span>`).join('');
-}
-const menus=()=>Object.keys(FD).filter(k=>FD[k][1].includes(mode)).forEach(menu);
-
-// ---- data ----
-async function load(){try{
-  all=(await csv(U.q)).slice(1).filter(c=>c.length>=9&&c[1]&&!['0','false','no'].includes((c[13]||'').toLowerCase())).map(c=>{const o=[2,3,4,5].map(i=>c[i]||'');return{q:c[1],opts:o,correct:findC(c[6],o),topic:c[7]||'',subject:c[8]||'',job:c[10]||'',mcol:c[12]||''}});
-  apply()}catch(e){console.error(e);bd.innerHTML='<div class="load">❌ Failed to load</div>'}}
-const loadF=()=>ld.f??=csv(U.f).then(L=>{
-  const H=L[0].map(h=>h.toLowerCase()),fi=(kw,fb)=>{const k=H.findIndex(h=>kw.some(w=>h.includes(w)));return k<0?fb:k},
-  [qi,ai,ti,si,vi]=[fi(['question'],1),fi(['answer'],2),fi(['topic'],3),fi(['subject'],4),fi(['verify','correct'],5)];
-  facts=L.slice(1).filter(c=>c[qi]).map(c=>{const v=(c[vi]||'').toLowerCase();return{q:c[qi],answer:c[ai]||'',topic:c[ti]||'',subject:c[si]||'',verify:['true','yes','1'].includes(v)?'t':['false','no','0'].includes(v)?'f':'u'}})}).catch(console.error);
-const loadN=()=>ld.n??=csv(U.n).then(L=>{
-  const HM={'s no':'row','sr no':'row',sno:'row',cat:'category',ref:'reference','one-line memory':'memory','one line memory':'memory','one-liner':'memory',oneliner:'memory','mcq status':'status',mcqstatus:'status',mcq_status:'status'},
-  H=L[0].map(h=>{h=h.toLowerCase().trim().replace(/\s+/g,' ').replace(/\.$/,'');return HM[h]||h}),ix=(k,d)=>{const i=H.indexOf(k);return i<0?d:i},
-  [ri,ci,rf,mi,si]=[ix('row',0),ix('category',1),ix('reference',2),ix('memory',3),ix('status',4)];
-  notes=L.slice(1).filter(r=>r.some(c=>c)).map(r=>({row:r[ri]||'',category:r[ci]||'',reference:r[rf]||'',memory:r[mi]||'',status:r[si]||''})).filter(o=>o.memory||o.reference);
-  notes.forEach((r,i)=>nBy[r._k=r.category+'||'+r.reference+'|'+i]=r)}).catch(e=>{console.error(e);notes=[]});
-
-// ---- main render ----
-async function apply(){
-  clearInterval(tmr);$('gd').innerHTML=$('st').innerHTML='';
-  const m=mode;
-  if(m=='facts'&&!ld.f||m=='notes'&&!ld.n){bd.innerHTML='<div class="load">🔄 Loading…</div>';await(m=='facts'?loadF():loadN());if(mode!=m)return}
-  menus();
-  const q=$('sq').value.trim().toLowerCase();
-  if(m=='facts')return rFacts(q);
-  if(m=='notes')return rNotes(q);
-  const isExam = P.mm=='exam';
-  $('tmr').style.display = isExam ? '' : 'none';
-  const inv=P.n<0;
-  let L=inv?all.filter(x=>x.correct<0):all.filter(x=>(!S.job.size||S.job.has(nk(x.job)))&&(!S.subject.size||S.subject.has(nk(x.subject)))&&(!q||[x.q,x.subject,x.topic,x.job,...x.opts].some(s=>s.toLowerCase().includes(q))));
-  L=shufCat(L);if(P.n>0)L=L.slice(0,P.n);
-  qs=L.map(x=>({...x,...shufOpts(x.opts,x.correct)}));ans=Array(qs.length).fill(null);cur=0;time=qs.length*60;
-  $('tt').textContent=isExam?(inv?'⚠️ Invalid Questions':S.job.size?`${S.job.size} Job(s) MCQs`:'All Jobs MCQs'):'📖 Solved Questions';
-  $('cnt').textContent=isExam?'0/'+qs.length:qs.length+' items';
-  if(!isExam) return rSolved();
-  if(qs.length){tmr=setInterval(tick,1000);tick()}
-  go(0,1);
-}
-function tick(){$('tmr').textContent=`${p2(time/60|0)}:${p2(time%60)}`;if(time<=0)return end();time--}
-function go(i,s){cur=i;render();grid();stats();s&&scrollTo({top:0,behavior:'smooth'})}
-function render(){
-  const x=qs[cur];if(!x)return bd.innerHTML='<div class="load">No questions match filters</div>';
-  const I=x.correct<0,d=ans[cur]!=null||I,last=cur==qs.length-1,mt=meta(MQ,x);
-  bd.innerHTML=`<div class="q" data-qi="${cur}">${vfy(x.mcol?'t':'u','qvfy')}${cur+1}. ${x.q}</div>`+
-  x.opts.map((o,i)=>`<button class="opt${d&&!I?(i==x.correct?' ok':i==ans[cur]?' bad':''):''}" data-i="${i}" ${d?'disabled':''}><span class="k">${'ABCD'[i]}</span><span>${esc(o)||'(Empty)'}</span></button>`).join('')+
-  (d&&mt?`<div class="lm chips">${mt}</div>`:'')+(I?'<div class="inv-msg">⚠️ Invalid — correct answer not in options</div>':'')+
-  `<div class="bar"><button class="btn btn-o" id="pv" ${cur?'':'disabled'}>◀ Back</button><button class="btn${last?' btn-g':''}" id="nx">${last?'🏁 Finish':'Next ▶'}</button></div>`}
-function grid(){$('gd').innerHTML=qs.map((x,i)=>`<button class="dot${x.correct<0?' inv':ans[i]!=null?(ans[i]==x.correct?' ok':' bad'):''}${i==cur?' cur':''}" data-i="${i}">${i+1}</button>`).join('')}
-function stats(){let k=0,w=0,p=0,v=0;qs.forEach((x,i)=>x.correct<0?v++:ans[i]==null?p++:ans[i]==x.correct?k++:w++);
-  $('st').innerHTML=[['ok','🎯 Correct',k],['bad','❌ Wrong',w],['','⏳ Pending',p],...(v?[['inv','⚠️ Invalid',v]]:[])].map(([c,l,n])=>`<span class="stat ${c}">${l} <span>${n}</span></span>`).join('')}
-function end(){clearInterval(tmr);const T=qs.length,r=qs.filter((x,i)=>ans[i]===x.correct).length,p=T?Math.round(r/T*100):0;
-  bd.innerHTML=`<div style="text-align:center;padding:20px"><div style="font-size:3rem;margin-bottom:8px">${r==T?'🌟':p>=70?'👏':'💪'}</div><div style="font-size:2.6rem;font-weight:900;color:#0284c7">${r} / ${T}</div><div style="color:#475569;margin:10px 0 20px;font-weight:600">${r==T?'Perfect score!':p>=70?'Great job!':'Keep practicing!'} — ${p}%</div><button class="btn" onclick="location.reload()">⟳ Try again</button></div>`;
-  $('gd').innerHTML=$('st').innerHTML=''}
-function rSolved(){
-  bd.innerHTML=qs.length?'<div class="list">'+qs.map((x,i)=>`<div class="li" data-qi="${i}">${vfy(x.mcol?'t':'u')}<div class="lq"><span class="sn">${i+1}</span>${esc(x.q)}</div><div class="lo">${x.opts.map((o,j)=>`<div class="lop${j==x.correct?' ok':''}"><span class="lt">${'ABCD'[j]}</span><span>${esc(o)||'(Empty)'}</span></div>`).join('')}</div>${meta(MQ,x)?`<div class="lm">${meta(MQ,x)}</div>`:''}</div>`).join('')+'</div>':'<div class="load">No questions match filters</div>'}
-function rFacts(q){
-  $('tt').textContent='💡 Facts';
-  fl=facts.filter(f=>(!S.fs.size||S.fs.has(nk(f.subject)))&&(!S.ft.size||S.ft.has(nk(f.topic)))&&(!q||[f.q,f.answer,f.subject,f.topic].some(s=>s.toLowerCase().includes(q)))&&(P.fv=='t'?f.verify=='t':P.fv=='f'?f.verify!='t':1));
-  if(P.fn)fl=fl.slice(0,P.fn);
-  $('cnt').textContent=fl.length+' facts';
-  bd.innerHTML=fl.length?'<div class="list">'+fl.map((f,i)=>{const m=meta(MF,{...f,topic:f.topic!=f.subject?f.topic:''});return`<div class="li fact" data-fi="${i}">${vfy(f.verify)}<div class="lq"><span class="sn">${i+1}</span>${esc(f.q)}</div><div class="ans"><strong>Answer:</strong> ${esc(f.answer)||'—'}</div>${m?`<div class="lm">${m}</div>`:''}</div>`}).join('')+'</div>':'<div class="load">No facts match</div>'}
-
-// ---- notes ----
-function rNotes(q){
-  $('tt').textContent='📔 Notes';
-  if(!notes.length){$('cnt').textContent='0 notes';return bd.innerHTML='<div class="load">⚠️ No notes loaded</div>'}
-  nv=notes.filter(r=>{
-    if((S.cat.size&&!S.cat.has(cl(r.category)||'Uncategorized'))||(S.st.size&&!S.st.has(cl(r.status)||'—')))return false;
-    if(q&&![r.reference,r.memory,r.category].some(s=>s.toLowerCase().includes(q)))return false;
-    const rd=nRead[r._k],rx=nR[r._k];
-    return P.tab=='all'||P.tab=='read'&&rd||P.tab=='unread'&&!rd||P.tab=='liked'&&rx?.type=='like'||P.tab=='disliked'&&rx?.type=='dislike'});
-  const c=r=>nRead[r._k]?.count||0,rk=r=>sm(r.status).r;
-  P.sort=='prio'?nv.sort((a,b)=>rk(a)-rk(b)):P.sort=='unread'?nv.sort((a,b)=>(c(a)>0)-(c(b)>0)):P.sort=='most'&&nv.sort((a,b)=>c(b)-c(a));
-  const rd=nv.filter(r=>nRead[r._k]).length;
-  $('cnt').textContent=nv.length+' notes';
-  bd.innerHTML=`<div class="ninfo"><div><b id="ns"></b>/<b>${nv.length}</b> of <b>${notes.length}</b></div><div><b>${rd}</b>/<b>${nv.length}</b><span class="pct">${nv.length?Math.round(rd*100/nv.length):0}% Read</span></div></div><div class="list" id="nl"></div><div class="nmore" id="nm"></div>`;
-  more(0)}
-function more(from){
-  const to=Math.min(from+(P.lim||PG),nv.length);
-  $('nl').insertAdjacentHTML('beforeend',nv.slice(from,to).map((r,i)=>nCard(r,from+i+1,nv.length)).join(''));
-  const ns=$('ns');if(ns)ns.textContent=to;
-  const nm=$('nm');if(!nm)return;
-  nm.innerHTML=to>=nv.length?`✓ All ${nv.length} loaded`:`<div><b>${to}</b> loaded · <b>${nv.length-to}</b> remaining</div><button id="mb" data-from="${to}">Load more</button>`}
-function nCard(r,i,tot,open){
-  const m=sm(r.status),k=r._k,rec=nRead[k],n=rec?rec.count:0,rx=nR[k],
-  sh=rec?`<span class="nst read">${rec.lastDay==today()?'● Read today':'● Read · '+esc(fS(rec.last))}</span>`:'<span class="nst">○ Unread</span>',
-  rows=[['Position',`${i} of ${tot}`],['Row',r.row],['Category',r.category],['Reference',r.reference],['Memory',r.memory,1],['Status',r.status],['Read count',rec?`${n} day${n==1?'':'s'}`:'0'],['First read',fT(rec?.first)||'—'],['Last read',fT(rec?.last)||'—'],['Reaction',rx?rx.type=='like'?'👍 Liked':'👎 Disliked':'—'],['Reacted at',fT(rx?.ts)||'—']],
-  e=esc(k);
-  return`<article class="ncard ${m.c}${n?' rd':''}${open?' open':''}" data-key="${e}" data-i="${i}">
-<div class="ctop"><span class="cnum">${i} / ${tot}</span><span class="nbadge ${m.c}">${esc(m.l)}</span></div>
-<div class="refrow"><span class="nref">${esc(r.reference||'—')}</span><span class="ncat">${esc(r.category||'Uncategorized')}</span></div>
-<div class="nmem">${esc(r.memory)}</div>
-<div class="nbot"><div><button class="nric like ${rx?.type=='like'?'on':''}" data-act="like">👍</button><button class="nric dislike ${rx?.type=='dislike'?'on':''}" data-act="dislike">👎</button></div><div><span class="nrc ${n?'h':''}">👁 ${n}×</span>${sh}<button class="nxh" data-act="expand">▾</button></div></div>
-<div class="ndet">${rows.map(([l,v,p])=>`<div class="ndr"><small>${l}</small><div>${p?esc(v):`<strong>${esc(v||'—')}</strong>`}</div></div>`).join('')}</div></article>`}
-function noteClick(t,c){
-  const k=c.dataset.key,r=nBy[k],a=t.closest('[data-act]')?.dataset.act,mem=t.closest('.nmem'),rx=a=='like'||a=='dislike',now=Date.now(),dn=dk(now);
-  let rec=nRead[k];if(!rec)rec={count:1,first:now,last:now,lastDay:dn};else{if(rec.lastDay!=dn)rec.count++;rec.last=now;rec.lastDay=dn}nRead[k]=rec;
-  if(rx){if(nR[k]?.type===a)delete nR[k];else nR[k]={type:a,ts:now}}
-  if(mem)gs([r.reference,r.memory,r.category]);
-  const wasOpen=c.classList.contains('open');
-  const shouldToggle=!mem&&!rx;
-  c.outerHTML=nCard(r,+c.dataset.i,nv.length,shouldToggle?!wasOpen:wasOpen)}
-
-// ---- events ----
-dr.onclick=e=>{
-  const t=e.target,c=s=>t.closest(s),dd=c('.dd');
-  $$('.dd.on').forEach(x=>x!=dd&&x.classList.remove('on'));
-  if(c('.ddb'))dd.classList.toggle('on');
-  const it=c('.ddi,.cc button');
-  if(it){const k=c('[data-k]').dataset.k,s=S[k],v=it.dataset.v;!v?s.clear():s.has(v)?s.delete(v):s.add(v);menu(k);if(mode=='notes')apply();return}
-  const b=c('.cb');
-  if(b){const{p,v}=b.dataset,x=/^-?\d+$/.test(v)?+v:v;P[p]=p=='fv'&&P.fv==x?'all':x;mark();if(['tab','sort','lim'].includes(p)&&mode=='notes')apply();if(p=='mm')apply();return}
-  const m=c('.mbtn');if(m){mode=m.dataset.m;sync();apply();return}
-  if(c('#dc'))return tgl(0);
-  if(c('#lb')){apply();return tgl(0)}
-  if(c('#rb')){Object.values(S).forEach(s=>s.clear());for(const k in Q)Q[k]='';dr.querySelectorAll('.ds input').forEach(i=>i.value='');$('sq').value='';Object.assign(P,P0);mark();menus()}
-};
-document.onclick=e=>{
-  const t=e.target,c=s=>t.closest(s);
-  if(t==ov)return tgl(0);
-  if(c('#dotsBtn'))return tgl(1);
-  if(dr.contains(t))return;
-  const d=c('.dot');if(d)return go(+d.dataset.i,1);
-  if(!bd.contains(t))return;
-  const o=c('.opt');
-  if(o&&!o.disabled){ans[cur]=+o.dataset.i;$('cnt').textContent=ans.filter(a=>a!=null).length+'/'+qs.length;return go(cur)}
-  if(c('#pv'))return go(cur-1);
-  if(c('#nx'))return cur==qs.length-1?end():go(cur+1);
-  if(c('#mb'))return more(+c('#mb').dataset.from);
-  if(mode=='notes'){const n=c('.ncard');if(n&&!c('.ndet'))noteClick(t,n)}
-  else if(mode=='facts'){const f=c('[data-fi]');if(f){const x=fl[+f.dataset.fi];gs([x.q,x.subject&&`Subject: ${x.subject}`,x.topic&&`Topic: ${x.topic}`])}}
-  else{const q=c('[data-qi]');if(q)qSearch(qs[+q.dataset.qi])}
-};
-document.addEventListener('input',e=>{
-  const t=e.target;
-  if(t.matches('.ds input')){const k=t.id.slice(0,-1);Q[k]=t.value;menu(k)}
-  else if(t.id=='sq')apply();
-});
-sync();load();
-</script></body></html>
+  <script>
+    (function () {
+      var loader = document.getElementById('loader');
+      var frame  = document.getElementById('appFrame');
+      function hideLoader() { if (loader) loader.classList.add('hide'); }
+      if (frame) frame.addEventListener('load', hideLoader);
+      setTimeout(hideLoader, 6000);
+      document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+    })();
+  </script>
+</body>
+</html>
