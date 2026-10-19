@@ -25,7 +25,6 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  // Never intercept Google Apps Script or Google-hosted assets
   if (request.url.includes('script.google.com') ||
       request.url.includes('googleusercontent.com') ||
       request.url.includes('fonts.googleapis.com') ||
@@ -33,7 +32,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // HTML / navigation: network-first, fallback to cache
   if (request.mode === 'navigate' ||
       (request.headers.get('accept') || '').includes('text/html')) {
     event.respondWith(
@@ -48,7 +46,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Everything else: cache-first
   event.respondWith(
     caches.match(request).then((cached) =>
       cached || fetch(request).then((response) => {
