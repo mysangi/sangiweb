@@ -6,10 +6,10 @@
   <meta name="theme-color" content="#f5f9fc">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Self Learners">
+  <meta name="apple-mobile-web-app-title" content="babanotes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="description" content="Self Learners — learn anything, anywhere.">
-  <title>Self Learners</title>
+  <meta name="description" content="babanotes — learn anything, anywhere.">
+  <title>babanotes</title>
 
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
@@ -30,20 +30,69 @@
     }
     .wrapper { position: fixed; inset: 0; width: 100%; height: 100%; background: #f5f9fc; transition: top .3s ease, height .3s ease; }
     iframe { display: block; width: 100%; height: 100%; border: 0; background: #f5f9fc; }
+
+    /* ===== Splash / Loader with 3-stroke logo ===== */
     .loader {
       position: fixed; inset: 0;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       background: #f5f9fc; color: #124263;
-      font-size: 0.85rem; font-weight: 600;
-      letter-spacing: 0.03em;
       z-index: 10; opacity: 1;
       transition: opacity 0.4s ease;
       pointer-events: none;
+      gap: 20px;
     }
     .loader.hide { opacity: 0; }
-    .loader span { display: inline-block; animation: pulse 1.2s ease-in-out infinite; }
+    .loader svg {
+      width: min(42vw, 180px);
+      height: auto;
+      display: block;
+    }
+    .loader .brand {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: clamp(0.95rem, 3.4vw, 1.15rem);
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #0f1419;
+      text-transform: uppercase;
+    }
+    .loader .brand .self { color: #000000; }
+    .loader .brand .learners { color: #0a1e3f; }
+    .loader .hint {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
     @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
+    /* Animate the three strokes emerging on load */
+    .loader .stroke {
+      transform-origin: top center;
+      animation: drawIn 1.1s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .loader .stroke.s1 { animation-delay: 0s; }
+    .loader .stroke.s2 { animation-delay: .15s; }
+    .loader .stroke.s3 { animation-delay: .3s; }
+    .loader .dotL {
+      transform-origin: center;
+      animation: popIn .5s cubic-bezier(.2,1.6,.4,1) both;
+    }
+    .loader .dotL.d1 { animation-delay: .9s; }
+    .loader .dotL.d2 { animation-delay: 1.0s; }
+    .loader .dotL.d3 { animation-delay: 1.1s; }
+
+    @keyframes drawIn {
+      from { transform: scaleY(0); opacity: 0; }
+      to   { transform: scaleY(1); opacity: 1; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== Install banner ===== */
     .install-banner {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -90,14 +139,30 @@
 <body>
   <div class="install-banner" id="installBanner">
     <div class="message">
-      <strong>📲 Install Self Learners</strong><br>
+      <strong>📲 Install babanotes</strong><br>
       Add to your home screen for quick access & offline use.
     </div>
     <button class="btn" id="installBtn">Install</button>
     <button class="close-btn" id="closeBannerBtn" aria-label="Close">✕</button>
   </div>
 
-  <div class="loader" id="loader"><span>Loading Self Learners…</span></div>
+  <div class="loader" id="loader">
+    <svg viewBox="0 0 520 560" xmlns="http://www.w3.org/2000/svg" aria-label="babanotes">
+      <!-- Three tilted strokes -->
+      <polygon class="stroke s1" fill="#000000"
+        points="130,170 200,470 90,470 50,200"/>
+      <polygon class="stroke s2" fill="#f4d000"
+        points="270,170 340,470 230,470 190,200"/>
+      <polygon class="stroke s3" fill="#4db9ff"
+        points="410,170 480,470 370,470 330,200"/>
+      <!-- Three dots -->
+      <circle class="dotL d1" cx="145" cy="510" r="34" fill="#000000"/>
+      <circle class="dotL d2" cx="285" cy="510" r="34" fill="#f4d000"/>
+      <circle class="dotL d3" cx="425" cy="510" r="34" fill="#4db9ff"/>
+    </svg>
+    <div class="brand"><span class="self">Self</span> <span class="learners">Learners</span></div>
+    <div class="hint">Loading babanotes…</div>
+  </div>
 
   <div class="wrapper" id="wrapper">
     <iframe
