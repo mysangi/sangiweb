@@ -1,7 +1,7 @@
 {
-  "name": "Self Learners",
-  "short_name": "Self Learners",
-  "description": "Self Learners — learn anything, anywhere.",
+  "name": "babanotes",
+  "short_name": "babanotes",
+  "description": "babanotes — learn anything, anywhere.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
