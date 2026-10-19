@@ -1,7 +1,9 @@
 (function () {
-  var loader = document.getElementById('loader');
-  var frame  = document.getElementById('appFrame');
+  var loader   = document.getElementById('loader');
+  var frame    = document.getElementById('appFrame');
+  var wrapper  = document.getElementById('wrapper');
   var loaderHidden = false;
+
   function hideLoader() {
     if (loaderHidden) return;
     loaderHidden = true;
@@ -15,11 +17,13 @@
       hideLoader();
     });
   }
-  setTimeout(hideLoader, 4000);
+  // Safety net — never stay stuck
+  setTimeout(hideLoader, 5000);
 
+  // Block iOS pinch gestures that would break the iframe
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
 
-  // Service Worker
+  // ---- Service Worker ----
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('sw.js')
@@ -28,11 +32,10 @@
     });
   }
 
-  // Install Banner
+  // ---- Install Banner ----
   var installBanner = document.getElementById('installBanner');
-  var installBtn = document.getElementById('installBtn');
+  var installBtn    = document.getElementById('installBtn');
   var closeBannerBtn = document.getElementById('closeBannerBtn');
-  var wrapper = document.getElementById('wrapper');
   var deferredPrompt = null;
 
   function isAppInstalled() {
@@ -45,10 +48,12 @@
   }
 
   function showBanner() {
+    if (!installBanner || !wrapper) return;
     installBanner.classList.add('show');
     wrapper.classList.add('banner-visible');
   }
   function hideBanner() {
+    if (!installBanner || !wrapper) return;
     installBanner.classList.remove('show');
     wrapper.classList.remove('banner-visible');
   }
@@ -58,27 +63,31 @@
     setTimeout(showBanner, 1500);
   }
 
-  closeBannerBtn.addEventListener('click', function () {
-    hideBanner();
-    sessionStorage.setItem('installBannerDismissed', 'true');
-  });
+  if (closeBannerBtn) {
+    closeBannerBtn.addEventListener('click', function () {
+      hideBanner();
+      sessionStorage.setItem('installBannerDismissed', 'true');
+    });
+  }
 
-  installBtn.addEventListener('click', function () {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function (r) {
-        if (r.outcome === 'accepted') hideBanner();
-        deferredPrompt = null;
-      });
-    } else {
-      var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      if (isIOS) {
-        alert('To install:\n\n1. Tap the Share button\n2. Scroll and tap "Add to Home Screen"\n3. Tap "Add"');
+  if (installBtn) {
+    installBtn.addEventListener('click', function () {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function (r) {
+          if (r.outcome === 'accepted') hideBanner();
+          deferredPrompt = null;
+        });
       } else {
-        alert('To install:\n\nOpen your browser menu (⋮) and select "Install app" or "Add to Home Screen".');
+        var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          alert('To install:\n\n1. Tap the Share button\n2. Scroll and tap "Add to Home Screen"\n3. Tap "Add"');
+        } else {
+          alert('To install:\n\nOpen your browser menu (⋮) and select "Install app" or "Add to Home Screen".');
+        }
       }
-    }
-  });
+    });
+  }
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
