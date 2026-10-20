@@ -9,9 +9,17 @@
   "background_color": "#f5f9fc",
   "theme_color": "#f5f9fc",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMGVhNWU5Ii8+PHBhdGggZD0iTTI1IDc1IGw1LTIwIGwzNS0zNSBhNiA2IDAgMCAxIDEwIDEwIGwtMzUgMzUgeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik03NSAyNSBsLTUgLTUgYTYgNiAwIDAgMCAtMTAgMTAgbDUgNSB6IiBmaWxsPSIjY2JkNWUxIi8+PC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMGVhNWU5Ii8+PHBhdGggZD0iTTI1IDc1IGw1LTIwIGwzNS0zNSBhNiA2IDAgMCAxIDEwIDEwIGwtMzUgMzUgeiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik03NSAyNSBsLTUgLTUgYTYgNiAwIDAgMCAtMTAgMTAgbDUgNSB6IiBmaWxsPSIjY2JkNWUxIi8+PC9zdmc+",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
   ]
 }
