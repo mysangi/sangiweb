@@ -11,11 +11,7 @@
   <meta name="description" content="babanotes — learn anything, anywhere.">
   <title>babanotes</title>
 
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+  <!-- NO STATIC ICONS HERE. JS will inject them below. -->
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -31,54 +27,20 @@
     .wrapper { position: fixed; inset: 0; width: 100%; height: 100%; background: #f5f9fc; transition: top .3s ease, height .3s ease; }
     iframe { display: block; width: 100%; height: 100%; border: 0; background: #f5f9fc; }
 
-    /* ===== Splash / Loader with animated pen logo ===== */
     .loader {
       position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       background: #f5f9fc; color: #124263;
+      font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.03em;
       z-index: 10; opacity: 1;
       transition: opacity 0.4s ease;
       pointer-events: none;
-      gap: 14px;
     }
     .loader.hide { opacity: 0; }
-
-    /* Pen logo styling */
-    .pen-logo {
-      width: min(46vw, 200px);
-      height: auto;
-      overflow: visible;
-      display: block;
-    }
-    .pen-logo .ink {
-      fill: none;
-      stroke: #0ea5e9;
-      stroke-width: 1.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .pen-logo #dot { fill: #0ea5e9; }
-    .pen-logo #pen path {
-      fill: #38bdf8;
-      stroke: #0ea5e9;
-      stroke-width: 1.2;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
-    .pen-logo #pen .line { fill: none; }
-    .pen-logo #pen circle { fill: #0ea5e9; }
-
-    .loader .hint {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      color: #64748b;
-      animation: pulse 1.2s ease-in-out infinite;
-    }
+    .loader span { display: inline-block; animation: pulse 1.2s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-    /* ===== Install banner ===== */
     .install-banner {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -132,21 +94,7 @@
     <button class="close-btn" id="closeBannerBtn" aria-label="Close">✕</button>
   </div>
 
-  <div class="loader" id="loader">
-    <svg class="pen-logo" id="splashLogo" viewBox="0 0 32 32" aria-label="babanotes">
-      <path class="ink" d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-      <path class="ink" d="M12 19l7-7 3 3-7 7-3-3z"/>
-      <path class="ink" d="M2 2l7.6 7.6"/>
-      <circle id="dot" cx="11" cy="11" r="0"/>
-      <g id="pen" style="opacity:0">
-        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-        <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-        <path class="line" d="M2 2l7.6 7.6"/>
-        <circle cx="11" cy="11" r="2"/>
-      </g>
-    </svg>
-    <div class="hint">Loading babanotes…</div>
-  </div>
+  <div class="loader" id="loader"><span>Loading babanotes…</span></div>
 
   <div class="wrapper" id="wrapper">
     <iframe
@@ -157,6 +105,21 @@
       referrerpolicy="no-referrer-when-downgrade">
     </iframe>
   </div>
+
+  <!-- Favicon Injection -->
+  <script>
+    (function setFavicon(){
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#0ea5e9"/><path d="M25 75 l5-20 l35-35 a6 6 0 0 1 10 10 l-35 35 z" fill="#fff"/><path d="M75 25 l-5 -5 a6 6 0 0 0 -10 10 l5 5 z" fill="#cbd5e1"/></svg>`;
+      const u = "data:image/svg+xml;base64," + btoa(svg);
+      const a = (r,h,t) => {
+        const l = document.createElement("link");
+        l.rel = r; l.href = h; if (t) l.type = t;
+        document.head.appendChild(l);
+      };
+      a("icon", u, "image/svg+xml");
+      a("apple-touch-icon", u);
+    })();
+  </script>
 
   <script src="app.js"></script>
 </body>
