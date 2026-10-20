@@ -1,4 +1,4 @@
-const CACHE_NAME = 'babanotes-v1';
+const CACHE_NAME = 'babanotes-v3'; // Bumped to v3 to force update
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
